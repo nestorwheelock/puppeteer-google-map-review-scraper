@@ -4,11 +4,13 @@
     "description": "",
     "main": "index.js",
     "dependencies": {
+        "axios": "^0.18.0",
+        "dotenv": "^7.0.0",
         "puppeteer": "^1.13.0"
     },
     "devDependencies": {},
     "scripts": {
-        "start": "index.js",
+        "start": "node index.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
