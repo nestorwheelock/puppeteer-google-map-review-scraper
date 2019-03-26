@@ -26,9 +26,9 @@ const scrape = async(queue)=>{
 (async ()=>{
     await spider.init();
     let queue = await map.nearby(25.0439355, 121.503584);
-    scrape(queue);
+    await scrape(queue);
     while(map.hasNext()){
         queue = await map.next();
-        scrape(queue);
+        await scrape(queue);
     }
 })();
