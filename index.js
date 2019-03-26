@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const Map = require("./place");
+const Map = require("./map");
 const Spider = require("./spider");
 
 const map = new Map(process.env.API_KEY);
