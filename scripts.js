@@ -1,5 +1,5 @@
 exports.getReviewsCount = () => {
-    const count = document.querySelector(".gm2-caption").textContent;
+    const count = document.querySelector("div.gm2-caption").textContent;
     return parseInt(count.match(/[0-9]*/g).join(""));
 }
 

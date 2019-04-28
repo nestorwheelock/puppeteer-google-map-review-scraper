@@ -7,7 +7,7 @@ const map = new Map(process.env.API_KEY);
 const spider = new Spider();
 
 const scrape = async(queue)=>{
-    for(let place of queue){
+    for(const place of queue){
         console.log(place)
         try{
             await spider.crawl(`https://www.google.com/maps/search/?api=1&query=${place.name}&query_place_id=${place.id}`);
