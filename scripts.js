@@ -17,7 +17,19 @@ exports.scrollToBottom = () => {
 }
 
 exports.getAllReviews = () => {
-    const all_reviews = document.querySelectorAll(".section-review-review-content > .section-review-text");
-    const result = [...all_reviews].map((e) => e.textContent);
+    const all_reviews = document.querySelectorAll(".section-review-content");
+    const result = [...all_reviews].map((e) => {
+        const author = e.querySelector(".section-review-title").textContent;
+        const content = e.querySelector(".section-review-text").textContent;
+
+        let rating = null;
+
+        if (e.querySelector(".section-review-stars")) {
+            rating = e.querySelector(".section-review-stars").getAttribute("aria-label");
+        } else if (e.querySelector(".section-review-numerical-rating")) {
+            rating = e.querySelector(".section-review-numerical-rating").textContent;
+        }
+        return { author, content, rating };
+    });
     return result;
 }

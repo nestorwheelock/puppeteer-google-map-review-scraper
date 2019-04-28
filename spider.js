@@ -7,7 +7,7 @@ const { getReviewsCount, getCurrentCount, getPreviousHeight, scrollToBottom, get
 const infiniteScrolling = async (page, total, delay = 100) => {
     let current_count = await page.evaluate(getCurrentCount);
 
-    while (current_count < total && current_count < 200) {
+    while (current_count < total && current_count < 1000) {
         await page.waitForSelector(".section-listbox.section-scrollbox.scrollable-y.scrollable-show");
         const previousHeight = await page.evaluate(getPreviousHeight);
 
