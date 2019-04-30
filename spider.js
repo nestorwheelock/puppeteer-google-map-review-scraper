@@ -4,10 +4,10 @@ const puppeteer = require("puppeteer");
 
 const { getReviewsCount, getCurrentCount, getPreviousHeight, scrollToBottom, getAllReviews } = require("./scripts");
 
-const infiniteScrolling = async (page, total, delay = 100) => {
+const infiniteScrolling = async (page, total, max = 200, delay = 100) => {
     let current_count = await page.evaluate(getCurrentCount);
 
-    while (current_count < total && current_count < 200) {
+    while (current_count < total && current_count < max) {
         await page.waitForSelector(".section-listbox.section-scrollbox.scrollable-y.scrollable-show");
         const previousHeight = await page.evaluate(getPreviousHeight);
 
@@ -32,15 +32,15 @@ class Spider {
         this.page = await this.browser.newPage();
     }
 
-    async crawl(url) {
+    async crawl(url, max) {
         await this.page.goto(url);
-        await this.page.waitForSelector("button.allxGeDnJMl__button.allxGeDnJMl__button-text",{timeout:10000});
-        await this.page.click("button.allxGeDnJMl__button.allxGeDnJMl__button-text");
+        const btn = await this.page.waitForXPath("//button[@class='allxGeDnJMl__button allxGeDnJMl__button-text'][contains(@aria-label,'評論')]", { timeout: 10000, visible: true });
+        await btn.click();
         await this.page.waitForNavigation();
-        await this.page.waitForSelector(".section-review-text",{timeout:10000});
+        await this.page.waitForSelector(".section-review-text", { timeout: 10000 });
 
         const reviews_count = await this.page.evaluate(getReviewsCount);
-        await infiniteScrolling(this.page, reviews_count);
+        await infiniteScrolling(this.page, reviews_count, max);
 
         const reviews = await this.page.evaluate(getAllReviews);
 
