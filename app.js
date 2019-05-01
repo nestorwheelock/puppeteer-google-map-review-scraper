@@ -1,10 +1,16 @@
 require("dotenv").config();
 
-const Map = require("./map");
-const Spider = require("./spider");
+const mongoose = require('mongoose');
+
+const Map = require("./modules/map");
+const Spider = require("./modules/spider");
 
 const map = new Map(process.env.API_KEY);
 const spider = new Spider();
+
+mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0-ngemq.mongodb.net/review?retryWrites=true`, {
+    useNewUrlParser: true
+});
 
 const scrape = async (queue) => {
     for (const place of queue) {
@@ -16,7 +22,7 @@ const scrape = async (queue) => {
         }
 
         try {
-            await spider.save();
+            await spider.saveToDb("Ximen");
         } catch (e) {
             console.log(e);
         }
@@ -31,4 +37,11 @@ const scrape = async (queue) => {
         queue = await map.next();
         await scrape(queue);
     }
+    mongoose
+        .disconnect()
+        .then(() => {
+            process.exit();
+        }).catch(e => {
+            console.log(e);
+        });
 })();

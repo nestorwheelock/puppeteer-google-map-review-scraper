@@ -1,8 +1,10 @@
 const fs = require("fs");
 
 const puppeteer = require("puppeteer");
+const mongoose = require('mongoose');
 
-const { getReviewsCount, getCurrentCount, getPreviousHeight, scrollToBottom, getAllReviews } = require("./scripts");
+const reviewSchema = require("../models/reviews");
+const { getReviewsCount, getCurrentCount, getPreviousHeight, scrollToBottom, getAllReviews } = require("../utils/scripts");
 
 const infiniteScrolling = async (page, total, max = 200, delay = 100) => {
     let current_count = await page.evaluate(getCurrentCount);
@@ -62,12 +64,34 @@ class Spider {
         this.result = null;
     }
 
+    saveToDb(collection) {
+        if (!this.result) {
+            throw new Error("There is no data to save.")
+        }
+
+        const Review = mongoose.model("Review", reviewSchema, collection);
+
+        const doc = new Review(this.result);
+        this.result = null;
+
+        return doc.save()
+            .then(() => {
+                console.log("document saved.");
+            }).catch(e => {
+                console.log(e);
+            });
+    }
+
     clear() {
         this.result = null;
     }
 
     async close() {
         await this.browser.close();
+    }
+
+    closeDb() {
+        return mongoose.connection.close();
     }
 }
 
