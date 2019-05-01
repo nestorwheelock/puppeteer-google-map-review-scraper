@@ -17,3 +17,10 @@ Set the following variables in .env file.
 - puppeteer ( this will install chromium locally )
 - progress
 - mongoose
+
+## Entry point
+### app.js
+##### main(lat,lng,collection,max)
+`lat` `lng` : \<number> : the latitude & longitude of the place to search.    
+`collection` \<string> : the collection name to save in mongodb.    
+`max` \<number> : the max length of reviews to get at each place.
