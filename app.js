@@ -12,30 +12,29 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASS
     useNewUrlParser: true
 });
 
-const scrape = async (queue) => {
+const scrape = async (queue, collection, max) => {
     for (const place of queue) {
-        console.log(place)
         try {
-            await spider.crawl(`https://www.google.com/maps/search/?api=1&query=${place.name}&query_place_id=${place.id}`, 200);
+            await spider.crawl(place, max);
         } catch (e) {
             console.log(e);
         }
 
         try {
-            await spider.saveToDb("Ximen");
+            await spider.saveToDb(collection);
         } catch (e) {
             console.log(e);
         }
     }
 }
 
-(async () => {
+const main = async (lat, lng, collection, max) => {
     await spider.init();
-    let queue = await map.nearby(25.0439355, 121.503584);
-    await scrape(queue);
+    let queue = await map.nearby(lat, lng);
+    await scrape(queue, collection, max);
     while (map.hasNext()) {
         queue = await map.next();
-        await scrape(queue);
+        await scrape(queue, collection, max);
     }
     mongoose
         .disconnect()
@@ -44,4 +43,6 @@ const scrape = async (queue) => {
         }).catch(e => {
             console.log(e);
         });
-})();
+};
+
+main(25.0439355, 121.503584, "Ximen", 200);

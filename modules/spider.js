@@ -2,11 +2,16 @@ const fs = require("fs");
 
 const puppeteer = require("puppeteer");
 const mongoose = require('mongoose');
+const ProgressBar = require('progress');
 
 const reviewSchema = require("../models/reviews");
 const { getReviewsCount, getCurrentCount, getPreviousHeight, scrollToBottom, getAllReviews } = require("../utils/scripts");
 
-const infiniteScrolling = async (page, total, max = 200, delay = 100) => {
+const infiniteScrolling = async (page, total, option = {}) => {
+    const max = option.max || 200;
+    const delay = option.delay || 100;
+    const name = option.name || "unknown";
+    const bar = new ProgressBar(`crawling : "${name}" [:bar] :percent`, { total: max, width: 30 });
     let current_count = await page.evaluate(getCurrentCount);
 
     while (current_count < total && current_count < max) {
@@ -18,7 +23,7 @@ const infiniteScrolling = async (page, total, max = 200, delay = 100) => {
         await page.waitForFunction(`document.querySelector(".section-listbox.section-scrollbox.scrollable-y.scrollable-show").scrollHeight>${previousHeight}`);
         await page.waitFor(delay);
         current_count = await page.evaluate(getCurrentCount);
-        console.log(current_count);
+        bar.tick(10);
     }
 }
 
@@ -34,7 +39,8 @@ class Spider {
         this.page = await this.browser.newPage();
     }
 
-    async crawl(url, max) {
+    async crawl(place, max) {
+        const url = `https://www.google.com/maps/search/?api=1&query=${place.name}&query_place_id=${place.id}`;
         await this.page.goto(url);
         const btn = await this.page.waitForXPath("//button[@class='allxGeDnJMl__button allxGeDnJMl__button-text'][contains(@aria-label,'評論')]", { timeout: 10000, visible: true });
         await btn.click();
@@ -42,7 +48,7 @@ class Spider {
         await this.page.waitForSelector(".section-review-text", { timeout: 10000 });
 
         const reviews_count = await this.page.evaluate(getReviewsCount);
-        await infiniteScrolling(this.page, reviews_count, max);
+        await infiniteScrolling(this.page, reviews_count, { max, name: place.name });
 
         const reviews = await this.page.evaluate(getAllReviews);
 
