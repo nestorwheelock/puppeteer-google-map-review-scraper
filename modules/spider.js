@@ -7,6 +7,12 @@ const ProgressBar = require('progress');
 const reviewSchema = require("../models/reviews");
 const { getReviewsCount, getCurrentCount, getPreviousHeight, scrollToBottom, getAllReviews } = require("../utils/scripts");
 
+/**
+ * 
+ * @param {Object} page page object of puppeteer
+ * @param {number} total total review number of this place
+ * @param {{max: number, delay: number, name: string}} option options
+ */
 const infiniteScrolling = async (page, total, option = {}) => {
     const max = option.max || 200;
     const delay = option.delay || 100;
@@ -34,11 +40,19 @@ class Spider {
         this.result = null;
     }
 
+    /**
+     * initialize spider
+     */
     async init() {
         this.browser = await puppeteer.launch();
         this.page = await this.browser.newPage();
     }
 
+    /**
+     * Crawling google map.
+     * @param {object} place place object contains name & id.
+     * @param {number} max limitation of reviews.
+     */
     async crawl(place, max) {
         const url = `https://www.google.com/maps/search/?api=1&query=${place.name}&query_place_id=${place.id}`;
         await this.page.goto(url);
@@ -57,6 +71,10 @@ class Spider {
         this.result = { title, data: reviews };
     }
 
+    /**
+     * Save result to an file in ./dist
+     * Clear this.result.
+     */
     save() {
         if (!this.result) {
             throw new Error("There is no data to save.")
@@ -70,6 +88,11 @@ class Spider {
         this.result = null;
     }
 
+    /**
+     * Save result to mongodb
+     * @param {string} collection collection name to save.
+     * @return {Promise}
+     */
     saveToDb(collection) {
         if (!this.result) {
             throw new Error("There is no data to save.")
@@ -88,14 +111,23 @@ class Spider {
             });
     }
 
+    /**
+     * clear result
+     */
     clear() {
         this.result = null;
     }
 
+    /**
+     * Close puppeteer 
+     */
     async close() {
         await this.browser.close();
     }
 
+    /**
+     * close connection to mongodb
+     */
     closeDb() {
         return mongoose.connection.close();
     }

@@ -12,6 +12,13 @@ mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true
 });
 
+/**
+ * Loop through the queue and crawl each place in the queue.
+ * Save the results in mongodb.
+ * @param {Array.<{name: string, id: string}>} queue the queue to be crawled in spider.
+ * @param {string} collection collection name to save.
+ * @param {number} max limitation of reviews.
+ */
 const scrape = async (queue, collection, max) => {
     for (const place of queue) {
         try {
@@ -28,6 +35,11 @@ const scrape = async (queue, collection, max) => {
     }
 }
 
+/**
+ * The entry point of this program.
+ * @param {string} collection collection name to save.
+ * @param {{lat: number,lng: number,max: number,type: string,radius: number}} option options.
+ */
 const main = async (collection, option = {}) => {
     const { lat, lng } = option;
     const max = option.max || 200;

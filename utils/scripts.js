@@ -1,22 +1,37 @@
-exports.getReviewsCount = () => {
+/**
+ * @return {number} returns the total number of reviews.
+ */
+const getReviewsCount = () => {
     const count = document.querySelector("div.gm2-caption").textContent;
     return parseInt(count.match(/[0-9]*/g).join(""));
 }
 
-exports.getCurrentCount = () => {
+/**
+ * @return {number} returns the current count of reviews.
+ */
+const getCurrentCount = () => {
     return document.querySelectorAll(".section-review-content").length;
 }
 
-exports.getPreviousHeight = () => {
+/**
+ * @return {number} returns the scrollHeight.
+ */
+const getPreviousHeight = () => {
     return document.querySelector(".section-listbox.section-scrollbox.scrollable-y.scrollable-show").scrollHeight;
 }
 
-exports.scrollToBottom = () => {
+/**
+ * scroll the scrollbar to the bottom
+ */
+const scrollToBottom = () => {
     let scrollbar = document.querySelector(".section-listbox.section-scrollbox.scrollable-y.scrollable-show");
     scrollbar.scrollTo(0, scrollbar.scrollHeight);
 }
 
-exports.getAllReviews = () => {
+/**
+ * @return {Array.<{author: string, content: string, rating: number}>} returns all reviews.
+ */
+const getAllReviews = () => {
     const all_reviews = document.querySelectorAll(".section-review-content");
     const result = [...all_reviews].map((e) => {
         const author = e.querySelector(".section-review-title").textContent;
@@ -33,3 +48,5 @@ exports.getAllReviews = () => {
     });
     return result;
 }
+
+module.exports = { getReviewsCount, getCurrentCount, getPreviousHeight, scrollToBottom, getAllReviews };
