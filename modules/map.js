@@ -13,8 +13,8 @@ class Map {
      * Get the first page.
      * @param {number} lat lat
      * @param {number} lng lng
-     * @param {number} radius radius in meters
-     * @param {string} type the place type of place api.
+     * @param {number} [radius] radius in meters
+     * @param {string} [type] the place type of place api.
      * @return {Array.<{name: string, id: string}>} the queue to be crawled in spider.
      */
     nearby(lat, lng, radius = 1500, type = "restaurant") {

@@ -37,11 +37,12 @@ const scrape = async (queue, collection, max) => {
 
 /**
  * The entry point of this program.
+ * @param {number} lat lat
+ * @param {number} lng lng
  * @param {string} collection collection name to save.
- * @param {{lat: number,lng: number,max: number,type: string,radius: number}} option options.
+ * @param {{max?: [number=200],type?: [string="restaurant"],radius?: [number=1500]}} option options.
  */
-const main = async (collection, option = {}) => {
-    const { lat, lng } = option;
+const main = async (lat, lng, collection, option = {}) => {
     const max = option.max || 200;
     const type = option.type || "restaurant";
     const radius = option.radius || 1500;
@@ -62,9 +63,7 @@ const main = async (collection, option = {}) => {
         });
 };
 
-main("Ximen", {
-    lat: 25.0439355,
-    lng: 121.503584,
+main(25.0439355, 121.503584, "Ximen", {
     max: 200,
     type: "restaurant",
     radius: 1500

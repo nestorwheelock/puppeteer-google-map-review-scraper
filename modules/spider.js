@@ -11,7 +11,7 @@ const { getReviewsCount, getCurrentCount, getPreviousHeight, scrollToBottom, get
  * 
  * @param {Object} page page object of puppeteer
  * @param {number} total total review number of this place
- * @param {{max: number, delay: number, name: string}} option options
+ * @param {{max?: [number=200], delay?: [number=100], name?: [string="unknown"]}} option options
  */
 const infiniteScrolling = async (page, total, option = {}) => {
     const max = option.max || 200;
