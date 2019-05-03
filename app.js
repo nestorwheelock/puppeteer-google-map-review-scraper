@@ -8,7 +8,7 @@ const Spider = require("./modules/spider");
 const map = new Map(process.env.API_KEY);
 const spider = new Spider();
 
-mongoose.connect(`mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0-ngemq.mongodb.net/review?retryWrites=true`, {
+mongoose.connect(process.env.CONNECTION_STRING, {
     useNewUrlParser: true
 });
 
@@ -28,9 +28,14 @@ const scrape = async (queue, collection, max) => {
     }
 }
 
-const main = async (lat, lng, collection, max) => {
+const main = async (collection, option = {}) => {
+    const { lat, lng } = option;
+    const max = option.max || 200;
+    const type = option.type || "restaurant";
+    const radius = option.radius || 1500;
+
     await spider.init();
-    let queue = await map.nearby(lat, lng);
+    let queue = await map.nearby(lat, lng, radius, type);
     await scrape(queue, collection, max);
     while (map.hasNext()) {
         queue = await map.next();
@@ -45,4 +50,10 @@ const main = async (lat, lng, collection, max) => {
         });
 };
 
-main(25.0439355, 121.503584, "Ximen", 200);
+main("Ximen", {
+    lat: 25.0439355,
+    lng: 121.503584,
+    max: 200,
+    type: "restaurant",
+    radius: 1500
+});
