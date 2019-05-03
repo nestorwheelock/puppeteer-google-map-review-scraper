@@ -44,6 +44,8 @@ const getAllReviews = () => {
         } else if (e.querySelector(".section-review-numerical-rating")) {
             rating = e.querySelector(".section-review-numerical-rating").textContent;
         }
+        rating = rating.trim().match(/([0-9])[^0-9]/)[0];
+        rating = parseInt(rating);
         return { author, content, rating };
     });
     return result;
