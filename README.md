@@ -19,9 +19,10 @@ Set the following variables in .env file.
 
 ## Entry point
 ### app.js
-##### main(collection, option)   
+##### main(lat, lng, collection, option)   
+- `lat` `lng` : \<number> : the latitude & longitude of the place to search.   
 - `collection` \<string> : the collection name to save in mongodb.  
 - `option` \<object> : 
-    * `lat` `lng` : \<number> : the latitude & longitude of the place to search.   
-    * `max` \<number> : the max length of reviews to get at each place. default to **200**    
+    * `max` \<number> : the max length of reviews to get at each place. default to **200** 
+    * `radius` \<number> : radius in meters. default to **1500**   
     * `type` \<string> : the place type of place api. default to **restaurant** (full list : [Place Types](https://developers.google.com/places/supported_types))
