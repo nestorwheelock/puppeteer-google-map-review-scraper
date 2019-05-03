@@ -8,8 +8,7 @@
 ### Environment variable
 Set the following variables in .env file.    
 **API_KEY** : Google Place API key.    
-**DB_USERNAME** : MongoDB username.    
-**DB_PASSWORD** : MongoDB password.    
+**CONNECTION_STRING** :   MongoDB connection string with username & password
 
 ## Dependencies
 - axios
